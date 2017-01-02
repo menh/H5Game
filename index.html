@@ -1,5 +1,178 @@
 <!DOCTYPE HTML>
 <html>
+	<script type="text/javascript">
+		var cwidth=400;
+		var cheight=300;
+		var dicex=50;
+		var dicey=50;
+		var dicewidth=100;
+		var diceheight=100;
+		var dotrad=6;
+		var dotx;
+		var doty;
+		var ctx;
+		var dx;
+		var dy;
+		var point;
+		var firstturn=true;
+		function init(){
+			
+			var ch=1+Math.floor(Math.random()*6);
+			drawface(ch);
+
+			/*ctx.beginPath();
+			ctx.strokeStyle="rgb(200,0,0)";
+			ctx.fillStyle="rgb(200,0,200)"
+			ctx.lineWidth=5;
+			ctx.arc(200,200,50,0,Math.PI,false);
+			ctx.closePath();
+			ctx.fill();
+			ctx.stroke();*/
+		}
+		function drawface(n){
+			ctx=document.getElementById("canvas").getContext('2d');
+			ctx.lineWidth=5;
+			ctx.clearRect(dx,dy,dicewidth,diceheight);
+			ctx.strokeRect(dx,dy,dicewidth,diceheight);
+			ctx.fillStyle="#009966";
+			switch(n){
+				case 1:
+					Draw1();
+					break;
+				case 2:
+					Draw2();
+					break;
+				case 3:
+					Draw2();
+					Draw1();
+					break;
+				case 4:
+					Draw4();
+					break;
+				case 5:
+					Draw1();
+					Draw4();
+					break;
+				case 6:
+					Draw4();
+					draw2mid();
+					break;
+			}
+		}
+		function Draw1(){
+			ctx.beginPath();
+			dotx=dx+0.5*dicewidth;
+			doty=dy+0.5*diceheight;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+		}
+		function Draw2(){
+			ctx.beginPath();
+			dotx=dx+3*dotrad;
+			doty=dy+3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			dotx=dx+dicewidth-3*dotrad;
+			doty=dy+diceheight-3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+
+		}
+		function Draw4(){
+			ctx.beginPath();
+			dotx=dx+3*dotrad;
+			doty=dy+3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+			ctx.beginPath();
+			dotx=dx+dicewidth-3*dotrad;
+			doty=dy+3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+			ctx.beginPath();
+			dotx=dx+3*dotrad;
+			doty=dy+diceheight-3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+
+			ctx.beginPath();
+			dotx=dx+dicewidth-3*dotrad;
+			doty=dy+diceheight-3*dotrad;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+		}
+		function draw2mid(){
+			ctx.beginPath();
+			dotx=dx+3*dotrad;
+			doty=dy+0.5*diceheight;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+
+			dotx=dx+dicewidth-3*dotrad;
+			doty=dy+0.5*diceheight;
+			ctx.arc(dotx,doty,dotrad,0,Math.PI*2,true);
+			ctx.closePath();
+			ctx.fill();
+		}
+		function throwdice(){
+			var ch=1+Math.floor(Math.random()*6);
+			var sum=ch;
+			dx=dicex;
+			dy=dicey;
+			drawface(ch);
+			dx=dicex+150;
+			ch=1+Math.floor(Math.random()*6);
+			sum+=ch;
+			drawface(ch);
+			if(firstturn){
+				switch(sum){
+					case 7:
+					case 11:
+						document.f.outcome.value="You Win!";
+						break;
+					case 12:
+						document.f.outcome.value="You lise";
+						break;
+					default:
+						point=sum;
+						document.f.pv.value=point;
+						firstturn=false;	
+						document.f.stage.value="Need follow-up throw.";
+						document.f.outcome.value=" ";
+				}
+			}
+			else{
+				switch(sum){
+					case point:
+						document.f.outcome.value="You Win!";
+						document.f.stage,value="Back to first throw.";
+						document.f.pv.value=" ";
+						firstturn=true;
+						break;
+					case 7:
+						document.f.outcome.value="You lose";
+						firstturn=true;
+						break;
+				}
+			}
+		}
+	</script>
 	<head>I am menh</head>
-	<body>hello everyone</body>
+	<title>Throwing dice</title>
+	<body>
+		<canvas id="canvas" width="400" height="300">
+			my first canvas
+		</canvas>
+		<br/>
+		<button onclick="throwdice();">Throw dice</button>
+		<form name="f">
+			Stage:<input name="stage" value="First Throw"/>
+			Point:<input name="pv" value="       "/>
+			Outcome:<input name="outcome" value="           "/>
+		</form>
+	</body>
 </html>
